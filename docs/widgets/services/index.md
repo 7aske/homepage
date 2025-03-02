@@ -8,6 +8,7 @@ search:
 You can also find a list of all available service widgets in the sidebar navigation.
 
 - [Adguard Home](adguard-home.md)
+- [APC UPS](apcups.md)
 - [ArgoCD](argocd.md)
 - [Atsumeru](atsumeru.md)
 - [Audiobookshelf](audiobookshelf.md)
@@ -33,6 +34,7 @@ You can also find a list of all available service widgets in the sidebar navigat
 - [ESPHome](esphome.md)
 - [EVCC](evcc.md)
 - [Fileflows](fileflows.md)
+- [Firefly III](firefly.md)
 - [Flood](flood.md)
 - [FreshRSS](freshrss.md)
 - [Frigate](frigate.md)

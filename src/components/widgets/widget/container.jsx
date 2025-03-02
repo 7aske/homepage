@@ -1,12 +1,11 @@
 import classNames from "classnames";
 import { useContext } from "react";
+import { SettingsContext } from "utils/contexts/settings";
 
 import WidgetIcon from "./widget_icon";
 import PrimaryText from "./primary_text";
 import SecondaryText from "./secondary_text";
 import Raw from "./raw";
-
-import { SettingsContext } from "utils/contexts/settings";
 
 export function getAllClasses(options, additionalClassNames = "") {
   if (options?.style?.header === "boxedWidgets") {
@@ -14,7 +13,7 @@ export function getAllClasses(options, additionalClassNames = "") {
       // eslint-disable-next-line no-param-reassign
       additionalClassNames = [
         additionalClassNames,
-        `backdrop-blur${options.style.cardBlur.length ? "-" : ""}${options.style.cardBlur}`,
+        `backdrop-blur-sm${options.style.cardBlur.length ? "-" : ""}${options.style.cardBlur}`,
       ].join(" ");
     }
 

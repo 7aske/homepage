@@ -9,23 +9,23 @@ import { useEffect, useContext, useState, useMemo } from "react";
 import { BiError } from "react-icons/bi";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
-
 import Tab, { slugifyAndEncode } from "components/tab";
 import ServicesGroup from "components/services/group";
 import BookmarksGroup from "components/bookmarks/group";
 import Widget from "components/widgets/widget";
 import Revalidate from "components/toggles/revalidate";
-import createLogger from "utils/logger";
-import useWindowFocus from "utils/hooks/window-focus";
-import { getSettings } from "utils/config/config";
 import { ColorContext } from "utils/contexts/color";
 import { ThemeContext } from "utils/contexts/theme";
 import { SettingsContext } from "utils/contexts/settings";
 import { TabContext } from "utils/contexts/tab";
-import { bookmarksResponse, servicesResponse, widgetsResponse } from "utils/config/api-response";
 import ErrorBoundary from "components/errorboundry";
-import themes from "utils/styles/themes";
 import QuickLaunch from "components/quicklaunch";
+
+import { bookmarksResponse, servicesResponse, widgetsResponse } from "utils/config/api-response";
+import themes from "utils/styles/themes";
+import { getSettings } from "utils/config/config";
+import useWindowFocus from "utils/hooks/window-focus";
+import createLogger from "utils/logger";
 
 const ThemeToggle = dynamic(() => import("components/toggles/theme"), {
   ssr: false,
@@ -86,6 +86,7 @@ function Index({ initialSettings, fallback }) {
   const windowFocused = useWindowFocus();
   const [stale, setStale] = useState(false);
   const { data: errorsData } = useSWR("/api/validate");
+  const { error: validateError } = errorsData || {};
   const { data: hashData, mutate: mutateHash } = useSWR("/api/hash");
 
   useEffect(() => {
@@ -116,6 +117,24 @@ function Index({ initialSettings, fallback }) {
       }
     }
   }, [hashData]);
+
+  if (validateError) {
+    return (
+      <div className="w-full h-screen container m-auto justify-center p-10 pointer-events-none">
+        <div className="flex flex-col">
+          <div className="basis-1/2 bg-theme-500 dark:bg-theme-600 text-theme-600 dark:text-theme-300 m-2 rounded-md font-mono shadow-md border-4 border-transparent">
+            <div className="bg-rose-200 text-rose-800 dark:text-rose-200 dark:bg-rose-800 p-2 rounded-md font-bold">
+              <BiError className="float-right w-6 h-6" />
+              Error
+            </div>
+            <div className="p-2 text-theme-100 dark:text-theme-200">
+              <pre className="opacity-50 font-bold pb-2">{validateError}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (stale) {
     return (
@@ -284,7 +303,7 @@ function Home({ initialSettings }) {
               className={classNames(
                 "sm:flex rounded-md bg-theme-100/20 dark:bg-white/5",
                 settings.cardBlur !== undefined &&
-                  `backdrop-blur${settings.cardBlur.length ? "-" : ""}${settings.cardBlur}`,
+                  `backdrop-blur-sm${settings.cardBlur.length ? "-" : ""}${settings.cardBlur}`,
               )}
               id="myTab"
               data-tabs-toggle="#myTabContent"
@@ -413,7 +432,7 @@ function Home({ initialSettings }) {
             headerStyles[headerStyle],
             settings.cardBlur !== undefined &&
               headerStyle === "boxed" &&
-              `backdrop-blur${settings.cardBlur.length ? "-" : ""}${settings.cardBlur}`,
+              `backdrop-blur-sm${settings.cardBlur.length ? "-" : ""}${settings.cardBlur}`,
           )}
         >
           <div id="widgets-wrap" className={classNames("flex flex-row w-full flex-wrap justify-between gap-x-2")}>
@@ -517,7 +536,9 @@ export default function Wrapper({ initialSettings, fallback }) {
           className={classNames(
             "fixed overflow-auto w-full h-full",
             backgroundBlur &&
-              `backdrop-blur${initialSettings.background.blur.length ? "-" : ""}${initialSettings.background.blur}`,
+              `backdrop-blur-sm${initialSettings.background.blur.length ? "-" : ""}${
+                initialSettings.background.blur - sm
+              }`,
             backgroundSaturate && `backdrop-saturate-${initialSettings.background.saturate}`,
             backgroundBrightness && `backdrop-brightness-${initialSettings.background.brightness}`,
           )}
