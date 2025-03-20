@@ -38,6 +38,11 @@ export default function Component({ service }) {
   const totalDurationSeconds = printStats.result.status.print_stats.total_duration ?? 0;
   const fileName = printStats.result.status.print_stats.filename;
   const { current_layer: currentLayer = "-", total_layer: totalLayer = "-" } = printStatsInfo;
+  const layers = printStats.result.status.print_stats.state === "standby" ? "- / -" : `${currentLayer} / ${totalLayer}`;
+  const progress =
+    printStats.result.status.print_stats.state === "standby"
+      ? "-"
+      : t("common.percent", { value: displayStatus.result.status.display_status.progress * 100 });
 
   return (
     <>
